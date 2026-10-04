@@ -12,10 +12,10 @@ export class LabResult {
     type: 'bigint',
     transformer: BigIntToNumberTransformer,
   })
-  labResultId: number;
+  labResultId!: number;
 
   @Column({ name: 'patient_id', type: 'bigint', transformer: BigIntToNumberTransformer })
-  patientId: number;
+  patientId!: number;
 
   @Column({
     name: 'encounter_id',
@@ -23,20 +23,20 @@ export class LabResult {
     nullable: true,
     transformer: BigIntToNumberTransformer,
   })
-  encounterId: number | null;
+  encounterId!: number | null;
 
   @Column({ name: 'test_name', type: 'varchar', length: 255 })
-  testName: string;
+  testName!: string;
 
   @Column({ name: 'test_value', type: 'varchar', length: 255, nullable: true })
-  testValue: string | null;
+  testValue!: string | null;
 
   @Column({ name: 'unit', type: 'varchar', length: 50, nullable: true })
-  unit: string | null;
+  unit!: string | null;
 
   @Column({ name: 'reference_range', type: 'varchar', length: 100, nullable: true })
-  referenceRange: string | null;
+  referenceRange!: string | null;
 
   @Column({ name: 'result_date', type: 'timestamp', nullable: true })
-  resultDate: Date | null;
+  resultDate!: Date | null;
 }

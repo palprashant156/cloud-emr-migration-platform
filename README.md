@@ -6,7 +6,7 @@ Pipeline: Extract → Validate → Transform → Deduplicate → ID Mapping → 
 
 ## Structure
 
-- `apps/migration-api/` – NestJS migration engine (implemented: config, source DB, health check)
+- `apps/migration-api/` – NestJS migration engine (implemented: config, source DB, health check, source entities, patient extraction)
 - `docs/` – Architecture, mapping, strategy, failure handling, cutover
 - `docker-compose.yml` – Local Postgres + API containers
 
@@ -18,5 +18,6 @@ Future phases add (inside `apps/migration-api/src/`): patients/doctors/… modul
 2. `npm install`
 3. `npm run start:dev`
 4. `curl http://localhost:3000/health` → `{"status":"ok","sourceDatabase":"connected",…}`
+5. `curl "http://localhost:3000/patients/test?limit=5"` → total count + sample rows
 
 See `docs/architecture.md` and `docs/migration-strategy.md`.

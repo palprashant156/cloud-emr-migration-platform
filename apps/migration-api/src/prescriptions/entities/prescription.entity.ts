@@ -9,26 +9,26 @@ export class Prescription {
     type: 'bigint',
     transformer: BigIntToNumberTransformer,
   })
-  prescriptionId: number;
+  prescriptionId!: number;
 
   @Column({ name: 'patient_id', type: 'bigint', transformer: BigIntToNumberTransformer })
-  patientId: number;
+  patientId!: number;
 
   @Column({ name: 'doctor_id', type: 'bigint', transformer: BigIntToNumberTransformer })
-  doctorId: number;
+  doctorId!: number;
 
   @Column({ name: 'medicine_name', type: 'varchar', length: 255 })
-  medicineName: string;
+  medicineName!: string;
 
   @Column({ name: 'dosage', type: 'varchar', length: 100, nullable: true })
-  dosage: string | null;
+  dosage!: string | null;
 
   @Column({ name: 'frequency', type: 'varchar', length: 100, nullable: true })
-  frequency: string | null;
+  frequency!: string | null;
 
   @Column({ name: 'start_date', type: 'date', nullable: true })
-  startDate: string | null;
+  startDate!: string | null;
 
   @Column({ name: 'end_date', type: 'date', nullable: true })
-  endDate: string | null;
+  endDate!: string | null;
 }

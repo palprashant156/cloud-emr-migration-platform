@@ -12,20 +12,20 @@ export class Doctor {
     type: 'bigint',
     transformer: BigIntToNumberTransformer,
   })
-  doctorId: number;
+  doctorId!: number;
 
   @Column({ name: 'first_name', type: 'varchar', length: 100 })
-  firstName: string;
+  firstName!: string;
 
   @Column({ name: 'last_name', type: 'varchar', length: 100 })
-  lastName: string;
+  lastName!: string;
 
   @Column({ name: 'specialization', type: 'varchar', length: 100, nullable: true })
-  specialization: string | null;
+  specialization!: string | null;
 
   @Column({ name: 'license_number', type: 'varchar', length: 100, nullable: true })
-  licenseNumber: string | null;
+  licenseNumber!: string | null;
 
   @Column({ name: 'created_at', type: 'timestamp' })
-  createdAt: Date;
+  createdAt!: Date;
 }

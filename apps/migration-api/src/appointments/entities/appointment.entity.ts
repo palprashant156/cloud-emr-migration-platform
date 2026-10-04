@@ -12,17 +12,17 @@ export class Appointment {
     type: 'bigint',
     transformer: BigIntToNumberTransformer,
   })
-  appointmentId: number;
+  appointmentId!: number;
 
   @Column({ name: 'patient_id', type: 'bigint', transformer: BigIntToNumberTransformer })
-  patientId: number;
+  patientId!: number;
 
   @Column({ name: 'doctor_id', type: 'bigint', transformer: BigIntToNumberTransformer })
-  doctorId: number;
+  doctorId!: number;
 
   @Column({ name: 'appointment_date', type: 'timestamp' })
-  appointmentDate: Date;
+  appointmentDate!: Date;
 
   @Column({ name: 'status', type: 'varchar', length: 30 })
-  status: string;
+  status!: string;
 }

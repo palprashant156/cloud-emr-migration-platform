@@ -9,23 +9,23 @@ export class Encounter {
     type: 'bigint',
     transformer: BigIntToNumberTransformer,
   })
-  encounterId: number;
+  encounterId!: number;
 
   @Column({ name: 'patient_id', type: 'bigint', transformer: BigIntToNumberTransformer })
-  patientId: number;
+  patientId!: number;
 
   @Column({ name: 'doctor_id', type: 'bigint', transformer: BigIntToNumberTransformer })
-  doctorId: number;
+  doctorId!: number;
 
   @Column({ name: 'encounter_date', type: 'timestamp' })
-  encounterDate: Date;
+  encounterDate!: Date;
 
   @Column({ name: 'chief_complaint', type: 'text', nullable: true })
-  chiefComplaint: string | null;
+  chiefComplaint!: string | null;
 
   @Column({ name: 'diagnosis', type: 'text', nullable: true })
-  diagnosis: string | null;
+  diagnosis!: string | null;
 
   @Column({ name: 'notes', type: 'text', nullable: true })
-  notes: string | null;
+  notes!: string | null;
 }
