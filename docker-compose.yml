@@ -1,0 +1,42 @@
+services:
+  migration-api:
+    build: ./apps/migration-api
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=development
+    depends_on:
+      - postgres-target
+
+  migration-worker:
+    build: ./apps/migration-worker
+    environment:
+      - NODE_ENV=development
+    depends_on:
+      - postgres-target
+
+  postgres-source:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: source_emr
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5433:5432"
+    volumes:
+      - pg-source:/var/lib/postgresql/data
+
+  postgres-target:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: target_emr
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - pg-target:/var/lib/postgresql/data
+
+volumes:
+  pg-source:
+  pg-target:

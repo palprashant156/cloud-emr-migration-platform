@@ -1,0 +1,14 @@
+{
+  "name": "cloud-emr-migration-platform",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Cloud-native EMR migration platform",
+  "workspaces": [
+    "apps/migration-api",
+    "apps/migration-worker"
+  ],
+  "scripts": {
+    "dev": "docker compose up",
+    "test": "npm test --workspaces"
+  }
+}
