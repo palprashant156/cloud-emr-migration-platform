@@ -6,7 +6,7 @@ Pipeline: Extract → Validate → Transform → Deduplicate → ID Mapping → 
 
 ## Structure
 
-- `apps/migration-api/` – NestJS migration engine (implemented: config, source DB, health check, source entities, patient extraction)
+- `apps/migration-api/` – NestJS migration engine (implemented: config, source DB, health check, source entities, patient extraction, validation)
 - `docs/` – Architecture, mapping, strategy, failure handling, cutover
 - `docker-compose.yml` – Local Postgres + API containers
 

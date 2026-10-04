@@ -4,6 +4,7 @@ import configuration from './config/configuration';
 import { SourceDatabaseModule } from './database/source-database.module';
 import { HealthModule } from './health/health.module';
 import { PatientsModule } from './patients/patients.module';
+import { ValidationModule } from './validation/validation.module';
 
 /**
  * Root module — Phase 1 wiring only.
@@ -27,6 +28,7 @@ import { PatientsModule } from './patients/patients.module';
     SourceDatabaseModule,
     HealthModule,
     PatientsModule,
+    ValidationModule,
   ],
 })
 export class AppModule {}
