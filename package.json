@@ -4,7 +4,7 @@
   "private": true,
   "description": "Cloud-native EMR migration platform",
   "workspaces": [
-    "apps/migration-api"
+    "backend"
   ],
   "scripts": {
     "dev": "docker compose up",

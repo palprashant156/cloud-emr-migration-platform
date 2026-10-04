@@ -15,7 +15,7 @@ import { ValidationModule } from './validation/validation.module';
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      // `.env` sits next to package.json in apps/migration-api/.
+      // `.env` sits next to package.json in backend/.
       // Missing file is fine — pure-environment deployments (Docker/AWS)
       // work without it.
       envFilePath: ['.env'],

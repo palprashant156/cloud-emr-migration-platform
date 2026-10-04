@@ -6,18 +6,17 @@ Pipeline: Extract → Validate → Transform → Deduplicate → ID Mapping → 
 
 ## Structure
 
-- `apps/migration-api/` – NestJS migration engine (all 8 phases)
+- `backend/` – NestJS migration engine: config, dual-DB wiring, extraction,
+  validation, transformation, migration engine + APIs, reconciliation, audit
 - `infrastructure/aws/` – Terraform: RDS target, S3 artifacts, DMS CDC (Phase 8)
 - `docs/` – Architecture, mapping, strategy, failure handling, cutover
 - `docker-compose.yml` – Local Postgres + API containers
 
-Future phases add (inside `apps/migration-api/src/`): patients/doctors/… modules, validation, transformation, reconciliation, audit, health — plus `apps/migration-worker/` (Phase 5+) and `infrastructure/aws/` (Phase 8).
+## Getting Started
 
-## Getting Started (Phase 1)
-
-1. `cd apps/migration-api && cp .env.example .env` (defaults match local `emr_source` on `localhost:5432`)
-2. `npm install`
-3. `npm run start:dev`
+1. `cd backend && cp .env.example .env` (defaults match local `emr_source` on `localhost:5432`)
+2. `npm install` (from the repo root — `backend` is the npm workspace)
+3. `npm run start:dev --workspace=migration-api`
 4. `curl http://localhost:3000/health` → `{"status":"ok","sourceDatabase":"connected",…}`
 5. `curl "http://localhost:3000/patients/test?limit=5"` → total count + sample rows
 

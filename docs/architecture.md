@@ -4,8 +4,8 @@
 EMR migration platform: extract from legacy source EMR, transform, validate, load to cloud target, reconcile.
 
 ## Components
-- `apps/migration-api`: NestJS migration engine (all 8 phases — see README demo)
-- `apps/migration-api/src/*`: one module per pipeline stage — extraction, validation, transformation, migration engine, reconciliation
+- `backend`: NestJS migration engine (all 8 phases — see README demo)
+- `backend/src/*`: one module per pipeline stage — extraction, validation, transformation, migration engine, reconciliation
 - `apps/migration-worker`: separate worker app (future scaling step — today the engine runs in-background inside the API; the MigrationModule exports exist for it)
 - `infrastructure/aws`: Terraform for RDS + S3 + DMS CDC (Phase 8)
 
