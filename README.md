@@ -1,25 +1,22 @@
 # Cloud EMR Migration Platform
 
-Cloud-native platform for migrating Electronic Medical Records (EMR) from legacy source systems to a modern cloud target.
+Cloud-native platform for migrating Electronic Medical Records (EMR) from a legacy PostgreSQL source to a modern cloud target (AWS RDS).
+
+Pipeline: Extract → Validate → Transform → Deduplicate → ID Mapping → Batch Load → Reconcile → Report.
 
 ## Structure
 
-- `apps/migration-api/` – API service to trigger, monitor, and manage migrations
-- `apps/migration-worker/` – Background workers for extract / transform / load jobs
-- `database/source-emr/` – Source EMR schema, fixtures, and snapshots
-- `database/target-schema/` – Target cloud schema and migrations
-- `migration/extractors/` – Source data extractors
-- `migration/transformers/` – Data transformation / mapping logic
-- `migration/validators/` – Validation rules
-- `migration/loaders/` – Target loaders
-- `migration/reconciliation/` – Reconciliation and parity checks
-- `infrastructure/aws/` – AWS infra (Terraform/CDK/CloudFormation)
+- `apps/migration-api/` – NestJS migration engine (implemented: config, source DB, health check)
 - `docs/` – Architecture, mapping, strategy, failure handling, cutover
-- `scripts/` – Operational scripts
-- `tests/` – Integration / e2e tests
+- `docker-compose.yml` – Local Postgres + API containers
 
-## Getting Started
+Future phases add (inside `apps/migration-api/src/`): patients/doctors/… modules, validation, transformation, reconciliation, audit, health — plus `apps/migration-worker/` (Phase 5+) and `infrastructure/aws/` (Phase 8).
 
-1. `docker compose up -d`
+## Getting Started (Phase 1)
+
+1. `cd apps/migration-api && cp .env.example .env` (defaults match local `emr_source` on `localhost:5432`)
 2. `npm install`
-3. See `docs/architecture.md` and `docs/migration-strategy.md`.
+3. `npm run start:dev`
+4. `curl http://localhost:3000/health` → `{"status":"ok","sourceDatabase":"connected",…}`
+
+See `docs/architecture.md` and `docs/migration-strategy.md`.

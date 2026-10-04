@@ -8,12 +8,8 @@ services:
     depends_on:
       - postgres-target
 
-  migration-worker:
-    build: ./apps/migration-worker
-    environment:
-      - NODE_ENV=development
-    depends_on:
-      - postgres-target
+  # migration-worker returns in Phase 5 (background ETL workers) with its own
+  # build context under apps/migration-worker.
 
   postgres-source:
     image: postgres:16
