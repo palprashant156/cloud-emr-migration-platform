@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectDataSource } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
 import { SOURCE_DATA_SOURCE_NAME } from '../database/source-database.module';
+import { TARGET_DATA_SOURCE_NAME } from '../database/target-database.module';
 
 export type DatabaseHealth = 'connected' | 'disconnected' | 'not_configured';
 
@@ -9,18 +10,15 @@ export interface HealthResponse {
   status: 'ok' | 'degraded';
   uptimeSeconds: number;
   sourceDatabase: DatabaseHealth;
-  /** Reserved for Phase 4 (target PostgreSQL / AWS RDS). */
   targetDatabase: DatabaseHealth;
 }
 
 const HEALTH_CHECK_QUERY = 'SELECT 1 AS ok';
 
 /**
- * HealthService — verifies the app can reach the legacy EMR database.
- *
- * Uses a lightweight `SELECT 1` against the named `source` DataSource.
- * Never leaks credentials or patient data — the response carries only
- * coarse connectivity states.
+ * HealthService — verifies the app can reach both databases.
+ * Only coarse connectivity states leave this service — never credentials,
+ * never patient data.
  */
 @Injectable()
 export class HealthService {
@@ -29,26 +27,30 @@ export class HealthService {
   constructor(
     @InjectDataSource(SOURCE_DATA_SOURCE_NAME)
     private readonly sourceDataSource: DataSource,
+    @InjectDataSource(TARGET_DATA_SOURCE_NAME)
+    private readonly targetDataSource: DataSource,
   ) {}
 
   async check(): Promise<HealthResponse> {
-    const sourceDatabase = await this.pingSource();
-    // Phase 4 will replace this constant with a real target-DB probe.
-    const targetDatabase: DatabaseHealth = 'not_configured';
+    const [sourceDatabase, targetDatabase] = await Promise.all([
+      this.ping(this.sourceDataSource),
+      this.ping(this.targetDataSource),
+    ]);
+    const status = sourceDatabase === 'connected' && targetDatabase === 'connected' ? 'ok' : 'degraded';
     return {
-      status: sourceDatabase === 'connected' ? 'ok' : 'degraded',
+      status,
       uptimeSeconds: Math.floor((Date.now() - this.startedAt) / 1000),
       sourceDatabase,
       targetDatabase,
     };
   }
 
-  private async pingSource(): Promise<DatabaseHealth> {
+  private async ping(dataSource: DataSource): Promise<DatabaseHealth> {
     try {
-      if (!this.sourceDataSource.isInitialized) {
+      if (!dataSource.isInitialized) {
         return 'disconnected';
       }
-      await this.sourceDataSource.query(HEALTH_CHECK_QUERY);
+      await dataSource.query(HEALTH_CHECK_QUERY);
       return 'connected';
     } catch {
       return 'disconnected';

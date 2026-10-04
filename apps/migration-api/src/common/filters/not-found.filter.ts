@@ -12,7 +12,15 @@ import { Request, Response } from 'express';
  * (e.g. `POST /migration/start` in Phase 5) so unknown-route errors always
  * point callers at something real.
  */
-export const AVAILABLE_ENDPOINTS: readonly string[] = ['GET /health', 'GET /patients/test'];
+export const AVAILABLE_ENDPOINTS: readonly string[] = [
+  'GET /health',
+  'GET /patients/test',
+  'POST /migration/start',
+  'GET /migration/:id/status',
+  'GET /migration/:id/errors',
+  'POST /migration/:id/retry',
+  'GET /migration/:id/reconciliation',
+];
 
 /**
  * Global 404 filter — turns Nest's bare "Cannot GET /x" into an actionable

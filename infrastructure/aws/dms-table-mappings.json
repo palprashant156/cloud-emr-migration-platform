@@ -1,0 +1,14 @@
+{
+  "rules": [
+    {
+      "rule-type": "selection",
+      "rule-id": "emr-tables",
+      "rule-name": "emr-tables",
+      "object-locator": {
+        "schema-name": "public",
+        "table-name": "%"
+      },
+      "rule-action": "include"
+    }
+  ]
+}

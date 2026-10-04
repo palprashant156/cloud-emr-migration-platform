@@ -14,10 +14,20 @@ export interface SourceDatabaseConfig {
   database: string;
 }
 
+export interface TargetDatabaseConfig extends SourceDatabaseConfig {
+  /**
+   * TypeORM schema sync for the target (which we own — unlike the source).
+   * True in development for velocity; MUST be false in production, where
+   * schema changes ship as reviewed migrations (see infrastructure/aws).
+   */
+  synchronize: boolean;
+}
+
 export interface AppConfig {
   nodeEnv: string;
   port: number;
   sourceDatabase: SourceDatabaseConfig;
+  targetDatabase: TargetDatabaseConfig;
 }
 
 function requireNonEmpty(value: string | undefined, name: string): void {
@@ -38,13 +48,19 @@ function parsePort(value: string | undefined, name: string, fallback: number): n
 }
 
 export default (): AppConfig => {
+  const nodeEnv = process.env.NODE_ENV ?? 'development';
   const sourceDbName = process.env.SOURCE_DB_NAME ?? 'emr_source';
   requireNonEmpty(process.env.SOURCE_DB_HOST, 'SOURCE_DB_HOST');
   requireNonEmpty(process.env.SOURCE_DB_USERNAME, 'SOURCE_DB_USERNAME');
   requireNonEmpty(process.env.SOURCE_DB_NAME, 'SOURCE_DB_NAME');
 
+  // Local target defaults to the `emr_target` database; in AWS this same
+  // block points at RDS — no code changes, only environment.
+  const targetSynchronize =
+    process.env.TARGET_DB_SYNCHRONIZE ?? (nodeEnv === 'production' ? 'false' : 'true');
+
   return {
-    nodeEnv: process.env.NODE_ENV ?? 'development',
+    nodeEnv,
     port: parsePort(process.env.PORT, 'PORT', 3000),
     sourceDatabase: {
       host: process.env.SOURCE_DB_HOST ?? 'localhost',
@@ -54,6 +70,14 @@ export default (): AppConfig => {
       // Production must always set a real password via the environment.
       password: process.env.SOURCE_DB_PASSWORD ?? '',
       database: sourceDbName,
+    },
+    targetDatabase: {
+      host: process.env.TARGET_DB_HOST ?? 'localhost',
+      port: parsePort(process.env.TARGET_DB_PORT, 'TARGET_DB_PORT', 5432),
+      username: process.env.TARGET_DB_USERNAME ?? 'postgres',
+      password: process.env.TARGET_DB_PASSWORD ?? '',
+      database: process.env.TARGET_DB_NAME ?? 'emr_target',
+      synchronize: targetSynchronize === 'true',
     },
   };
 };

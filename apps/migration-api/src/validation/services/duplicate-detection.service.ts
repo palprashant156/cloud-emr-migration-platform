@@ -51,7 +51,7 @@ export class DuplicateDetectionService {
   classifyAll(candidates: DuplicateCandidate[]): DuplicateClassification[] {
     const keys = new Map<number, NormalizedKeys>();
     for (const candidate of candidates) {
-      keys.set(candidate.sourceId, this.keysFor(candidate));
+      keys.set(candidate.sourceId, this.buildKeys(candidate));
     }
 
     const firstByExact = new Map<string, number>();
@@ -135,7 +135,8 @@ export class DuplicateDetectionService {
     });
   }
 
-  private keysFor(candidate: DuplicateCandidate): NormalizedKeys {
+  /** Normalized match keys for one candidate (public for the migration engine's global index). */
+  buildKeys(candidate: DuplicateCandidate): NormalizedKeys {
     const first = candidate.firstName.trim().toLowerCase();
     const last = candidate.lastName.trim().toLowerCase();
     const dob = candidate.dateOfBirth.trim();

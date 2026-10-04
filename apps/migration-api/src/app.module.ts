@@ -2,17 +2,14 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import configuration from './config/configuration';
 import { SourceDatabaseModule } from './database/source-database.module';
+import { TargetDatabaseModule } from './database/target-database.module';
 import { HealthModule } from './health/health.module';
+import { MigrationModule } from './migration/migration.module';
 import { PatientsModule } from './patients/patients.module';
 import { ValidationModule } from './validation/validation.module';
-
 /**
- * Root module — Phase 1 wiring only.
- *
- * Phase 2+ will register PatientsModule, ValidationModule, MigrationModule,
- * TargetDatabaseModule, ReconciliationModule, etc. Each stage of the
- * Extract → Validate → Transform → Load pipeline gets its own module so
- * no single service grows into a 2,000-line god object.
+ * Root module. Each pipeline stage owns its module so no single service
+ * grows into a 2,000-line god object.
  */
 @Module({
   imports: [
@@ -26,9 +23,11 @@ import { ValidationModule } from './validation/validation.module';
       cache: true,
     }),
     SourceDatabaseModule,
+    TargetDatabaseModule,
     HealthModule,
     PatientsModule,
     ValidationModule,
+    MigrationModule,
   ],
 })
 export class AppModule {}

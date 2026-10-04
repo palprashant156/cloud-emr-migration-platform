@@ -1,0 +1,8 @@
+export enum MigrationRunStatus {
+  PENDING = 'PENDING',
+  RUNNING = 'RUNNING',
+  PAUSED = 'PAUSED',
+  COMPLETED = 'COMPLETED',
+  FAILED = 'FAILED',
+  CANCELLED = 'CANCELLED',
+}

@@ -1,11 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { DEFAULT_BATCH_SIZE, MAX_BATCH_SIZE } from '../../common/constants/extraction.constants';
 import { Patient } from '../entities/patient.entity';
 import { SOURCE_DATA_SOURCE_NAME } from '../../database/source-database.module';
-
-export const DEFAULT_BATCH_SIZE = 1000;
-export const MAX_BATCH_SIZE = 5000;
 
 /**
  * Reads patients from the legacy EMR database in bounded batches.
@@ -54,9 +52,16 @@ export class PatientExtractorService {
    * `for await (const batch of extractor.extractAll(1000)) { ... }`.
    * The caller never holds more than a single batch in memory.
    */
-  async *extractAll(batchSize: number = DEFAULT_BATCH_SIZE): AsyncGenerator<Patient[], void, void> {
+  /**
+   * Async generator over the table (optionally resuming after `startAfterId`,
+   * e.g. from a checkpoint), one batch at a time.
+   */
+  async *extractAll(
+    batchSize: number = DEFAULT_BATCH_SIZE,
+    startAfterId: number | null = null,
+  ): AsyncGenerator<Patient[], void, void> {
     const size = this.normalizeBatchSize(batchSize);
-    let afterId: number | null = null;
+    let afterId: number | null = startAfterId;
     for (;;) {
       const batch = await this.extractBatch(afterId, size);
       if (batch.length === 0) {
@@ -68,6 +73,18 @@ export class PatientExtractorService {
         return;
       }
     }
+  }
+
+  /** Point reads for the retry path (re-process specific source IDs). */
+  extractByIds(ids: number[]): Promise<Patient[]> {
+    if (ids.length === 0) {
+      return Promise.resolve([]);
+    }
+    return this.patients
+      .createQueryBuilder('patient')
+      .where('patient.patientId IN (:...ids)', { ids })
+      .orderBy('patient.patientId', 'ASC')
+      .getMany();
   }
 
   private normalizeBatchSize(batchSize: number): number {
